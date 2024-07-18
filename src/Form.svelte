@@ -1,46 +1,43 @@
 <script>
+  import { onMount } from "svelte";
+  import axios from "axios";
+
   let kodam = "";
+  let nama = "";
+  let kodamNama = "";
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const button = document.querySelector("button.cariKodam");
-    const input = document.querySelector("input.input");
-    const kodamNama = document.getElementById("kodamNama");
-
-    button.addEventListener("click", function () {
-      const nama = input.value.trim();
-      if (nama === "") {
-        return;
-      }
-      fetchKodamName(nama);
-    });
-
-    function fetchKodamName(name) {
-      const url =
-        "https://pokeapi.co/api/v2/pokemon-species/?offset=0&limit=20";
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          const results = data.results;
-          const randomIndex = Math.floor(Math.random() * results.length);
-          kodam = results[randomIndex].name;
-          kodamNama.innerHTML = `<b>"${kodam}"</b>`;
-        })
-        .catch((error) => {
-          console.error("Error fetching Kodam name:", error);
-          kodamNama.innerHTML = `<b>${name} - Error fetching Kodam name</b>`;
-        });
+  async function fetchKodamName() {
+    if (nama.trim() === "") {
+      return;
     }
-  });
+
+    const url = "https://pokeapi.co/api/v2/pokemon-species/?offset=0&limit=20";
+
+    try {
+      const response = await axios.get(url);
+      const results = response.data.results;
+      const randomIndex = Math.floor(Math.random() * results.length);
+      kodam = results[randomIndex].name;
+      kodamNama = `${kodam}`;
+    } catch (error) {
+      console.error("Error fetching Kodam name:", error);
+      kodamNama = `${nama} - Error fetching Kodam name`;
+    }
+  }
 </script>
 
 <main>
   <div class="form">
     <div class="form-group">
       <div class="header"><h1>CEK KODAM DISINI</h1></div>
-      <div class="namaKodam"><p id="kodamNama"><b>"{kodam}"</b></p></div>
-      <input class="input" type="text" placeholder="Masukkan Nama Anda" />
-      <button class="cariKodam">Temukan</button>
+      <div class="namaKodam"><p><b>"{kodamNama}"</b></p></div>
+      <input
+        class="nama"
+        type="text"
+        placeholder="Masukkan Nama Anda"
+        bind:value={nama}
+      />
+      <button class="cariKodam" on:click={fetchKodamName}>Temukan</button>
     </div>
   </div>
 </main>
@@ -85,7 +82,7 @@
     margin: auto;
   }
 
-  input.input {
+  input.nama {
     width: 90%;
     height: 38px;
     background-color: white;
