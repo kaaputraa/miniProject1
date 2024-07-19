@@ -3,6 +3,7 @@
 
   let kodam = "";
   let nama = "";
+  const listNama = ["wijaya", "sukmana", "hidayat", "kesuma"];
 
   async function fetchKodamName() {
     if (nama.trim() === "") {
@@ -17,7 +18,11 @@
       // console.log("Fetch kodam berhasil");
       // console.log(response.data.results);
       const randomIndex = Math.floor(Math.random() * results.length);
-      kodam = results[randomIndex].name;
+      if (!listNama.includes(nama)) {
+        kodam = "Kosong";
+      } else {
+        kodam = results[randomIndex].name;
+      }
     } catch (error) {
       console.error("Error fetching Kodam", error);
     }
