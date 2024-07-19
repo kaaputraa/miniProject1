@@ -1,10 +1,8 @@
 <script>
-  import { onMount } from "svelte";
   import axios from "axios";
 
   let kodam = "";
   let nama = "";
-  let kodamNama = "";
 
   async function fetchKodamName() {
     if (nama.trim() === "") {
@@ -16,12 +14,12 @@
     try {
       const response = await axios.get(url);
       const results = response.data.results;
+      // console.log("Fetch kodam berhasil");
+      // console.log(response.data.results);
       const randomIndex = Math.floor(Math.random() * results.length);
       kodam = results[randomIndex].name;
-      kodamNama = `${kodam}`;
     } catch (error) {
-      console.error("Error fetching Kodam name:", error);
-      kodamNama = `${nama} - Error fetching Kodam name`;
+      console.error("Error fetching Kodam", error);
     }
   }
 </script>
@@ -30,7 +28,7 @@
   <div class="form">
     <div class="form-group">
       <div class="header"><h1>CEK KODAM DISINI</h1></div>
-      <div class="namaKodam"><p><b>"{kodamNama}"</b></p></div>
+      <div class="namaKodam"><p><b>"{kodam}"</b></p></div>
       <input
         class="nama"
         type="text"
